@@ -1,0 +1,7 @@
+; flake8 is a package used for linting/checking code is correct
+[flake8]
+exclude = 
+    migrations,
+    __pycache__,
+    manage.py,
+    settings.py
