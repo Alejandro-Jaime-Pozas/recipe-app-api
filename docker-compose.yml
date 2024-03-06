@@ -6,7 +6,7 @@ version: "3.9"
 # build > context specifies that we want to build the docker file inside the cur directory
 # args: - DEV=true sets an argument in the build folder w k,v = DEV,true
 # ports connects port 8000 from our local machine to port 8000 in docker cointainer. this is how can access network to connect to docker server
-# volumes are a way to map our directories in local to the docker container so they're located at same level within their context
+# volumes are a way to map our directories in local to the docker container so they're located at same level within their contexts; ie if you create filed in one place, should update in the other
 # command is the cmd used to run teh service in docker container
 services:
   app:
