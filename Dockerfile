@@ -2,6 +2,8 @@
 # alpine is a very basic version of linux, has bare minimum reqs and is efficient
 FROM python:3.9-alpine3.13 
 # LABEL maintainer is used so that other developers know who is the person in charge of app
+# USER root # if you want to specify user when building image
+
 LABEL maintainer="londonappdeveloper.com" 
 
 # recommended when running py in docker container, means you don't want to buffer the output
@@ -29,13 +31,20 @@ RUN python -m venv /py && \
         then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
     fi && \
     rm -rf /tmp && \
+    # REMOVING THIS BELOW SINCE DID NOT ALLOW ME TO PROCEED
     adduser \
         --disabled-password \
         --no-create-home \
         django-user 
 
 # ENV PATH variable specifies an environ key which will help reduce code needed when running commands later
-ENV PATH="py/bin:$PATH"
+# ORIGINAL CODE FROM VIDEO WAS WRONG, GUIDING ME TO WRONG PATH SO HAD TO CHANGE PATH TO MAKE WORK
+ENV PATH="/py/bin:$PATH"
+# ENV PATH="/py/bin:/py/lib/python3.9/site-packages:$PATH"
 
 # USER is last line of docker file; specifies user to switch to after root user has created Dockerfile; this new user will persist for all future docker commands
 USER django-user 
+
+# check current user in docker linux kernel shell
+# current_user=$(whoami)
+# grep "^$current_user:" /etc/passwd | cut -d: -f1

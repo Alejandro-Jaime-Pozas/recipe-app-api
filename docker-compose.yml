@@ -16,7 +16,8 @@ services:
         - DEV=true
     ports:
       - "8000:8000"
+    # volumes maps the current ./app in local directory to the cotainer's equivalent /app so everything is synced
     volumes:
       - ./app:/app 
     command: >
-      sh -c "py manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py runserver 0.0.0.0:8000"
