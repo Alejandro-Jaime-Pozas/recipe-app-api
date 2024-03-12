@@ -23,14 +23,19 @@ EXPOSE 8000
 # adduser cmd then adds a specific user to our image; its best practice to specify a user that is not root/superadmin user for security. user w/no pwd, name the user
 # ARG here is set and then overwritten in docker compose yml file, so that when app runs through docker compose, DEV is set to true, not false
 # if, then, fi stmt is an if stmt in docker shell cmd, we're checking if DEV is set to true and if so installing the dev reqs from txt file
+# apk lines add to the alpine based image some updates. client for postgres so that it can run during prod. --virtual line sets a virtual dependancy package, that can later be remove. packages below that are the ones needed to install so that psycopg2 is installed correctly and 
 ARG DEV=false
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
+    apk add --update --no-cache postgresql-client && \
+    apk add --update --no-cache --virtual .tmp-build-deps \
+        build-base postgresql-dev musl-dev && \
     /py/bin/pip install -r /tmp/requirements.txt && \
     if [ $DEV = "true" ]; \
         then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
     fi && \
     rm -rf /tmp && \
+    apk del .tmp-build-deps && \
     # REMOVING THIS BELOW SINCE DID NOT ALLOW ME TO PROCEED
     adduser \
         --disabled-password \

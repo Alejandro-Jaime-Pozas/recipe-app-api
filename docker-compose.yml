@@ -1,7 +1,7 @@
 # version of python to be used in docker for maintainability 
 version: "3.9"
 
-# services - docker compose files usually include 1 or more services to be used
+# services - docker compose files usually include 1 or more services to be used; these services should be equivalent to some form of online server (a database, django app, frontend app, etc)
 # app is the name of our service. this is the service that will run the docker file
 # build > context specifies that we want to build the docker file inside the cur directory
 # args: - DEV=true sets an argument in the build folder w k,v = DEV,true
@@ -21,3 +21,27 @@ services:
       - ./app:/app 
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
+    # matching values here from the db service below's environment
+    environment:
+      - DB_HOST=db
+      - DB_NAME=devdb
+      - DB_USER=devuser
+      - DB_PASS=changeme
+    # this tells docker-compose that this django app depends on the db service, so if db doesn't work, django app too
+    depends_on:
+      - db
+
+  # db is the name of the service and the image used to build that service
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - dev-db-data:/var/lib/postgresql/data
+    # THESE below are environment variables that should be included in configuration for our database within the django app
+    environment:
+      - POSTGRES_DB=devdb
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=changeme
+
+# volumes allow databases to persist data if needed and other benefits, instead of creating, deleting dbs.
+volumes:
+  dev-db-data:
