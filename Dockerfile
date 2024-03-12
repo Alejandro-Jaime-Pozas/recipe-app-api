@@ -43,7 +43,6 @@ RUN python -m venv /py && \
         django-user 
 
 # ENV PATH variable specifies an environ key which will help reduce code needed when running commands later
-# ORIGINAL CODE FROM VIDEO WAS WRONG, GUIDING ME TO WRONG PATH SO HAD TO CHANGE PATH TO MAKE WORK
 ENV PATH="/py/bin:$PATH"
 # ENV PATH="/py/bin:/py/lib/python3.9/site-packages:$PATH"
 
