@@ -21,7 +21,7 @@ services:
       - ./app:/app 
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
-    # matching values here from the db service below's environment
+    # matching values here from the 'db' service below's environment
     environment:
       - DB_HOST=db
       - DB_NAME=devdb
