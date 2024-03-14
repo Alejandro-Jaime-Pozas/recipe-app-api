@@ -19,8 +19,11 @@ services:
     # volumes maps the current ./app in local directory to the cotainer's equivalent /app so everything is synced
     volumes:
       - ./app:/app 
+    # with command you can input multiple commands in multiple lines
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
     # matching values here from the 'db' service below's environment
     environment:
       - DB_HOST=db
