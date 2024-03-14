@@ -3,7 +3,7 @@ Sample tests
 '''
 from django.test import SimpleTestCase # can also import TestCase for more complex tests
 
-from . import calc 
+from . import calc
 
 class CalcTests(SimpleTestCase):
     '''Test the calc module.'''
