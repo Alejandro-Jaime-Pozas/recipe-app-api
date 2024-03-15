@@ -10,9 +10,8 @@ from django.db.utils import OperationalError # another exception we might encoun
 from django.test import SimpleTestCase # basic testing for unit tests. using simple test to avoid migrations folder etc needed for a standard database
 
 
-
 # @patch() decorator to mock functions. we're going to simulate database running without actually running it
-# path in @patch() is the path to the Command class in this core directory. the 'check' is a method built into the BaseCommand class that our Command class is inheriting from. check allows us to check the status of the database. 
+# path in @patch() is the path to the Command class in this core directory. the 'check' is a method built into the BaseCommand class that our Command class is inheriting from. check allows us to check the status of the database.
 @patch('core.management.commands.wait_for_db.Command.check')
 class CommandTests(SimpleTestCase):
     """Test commands."""
@@ -26,7 +25,7 @@ class CommandTests(SimpleTestCase):
 
         patched_check.assert_called_once_with(databases=['default']) # this ensures that the mocked obj which is returned by the 'check' command is called with the database parameter
 
-    
+
     # another test case is that we run the wait for command and db is not ready, and we want to wait a few seconds and try again
     # in terms of argument calls in class methods like test_wait_for_db_delay, the order of ops is the most inner @patch() decorator is called first, then the next outer one, which is why patched_sleep is included BEFORE the patched_check obj
     @patch('time.sleep') # mock the sleep method
@@ -39,7 +38,7 @@ class CommandTests(SimpleTestCase):
         patched_check.side_effect = [Psycopg2Error] * 2 + \
             [OperationalError] * 3 + \
             [True]
-        
+
         call_command('wait_for_db')
 
         self.assertEqual(patched_check.call_count, 6) # checking that the 'check' command in @patch decorator fn is being called exactly 6 times as input in side_effect

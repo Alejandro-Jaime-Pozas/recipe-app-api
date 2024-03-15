@@ -1,4 +1,4 @@
-# version of python to be used in docker for maintainability 
+# version of python to be used in docker for maintainability
 version: "3.9"
 
 # services - docker compose files usually include 1 or more services to be used; these services should be equivalent to some form of online server (a database, django app, frontend app, etc)
@@ -18,7 +18,7 @@ services:
       - "8000:8000"
     # volumes maps the current ./app in local directory to the cotainer's equivalent /app so everything is synced
     volumes:
-      - ./app:/app 
+      - ./app:/app
     # with command you can input multiple commands in multiple lines
     command: >
       sh -c "python manage.py wait_for_db &&
@@ -45,6 +45,7 @@ services:
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
 
-# volumes allow databases to persist data if needed and other benefits, instead of creating, deleting dbs.
+# volumes allow databases to persist data if needed and other benefits, instead of creating, deleting dbs
 volumes:
+  # name of volume below indicates name that will be appended to app's volume name in docker
   dev-db-data:
