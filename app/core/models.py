@@ -16,9 +16,20 @@ class UserManager(BaseUserManager):
     # this is a custom method not built in to create a new user
     def create_user(self, email, password=None, **extra_fields):  # pwd set to None if there's need to create an unusable user; extra_fields is for any kwargs we need to pass in
         """Create, save and return a new user."""
-        user = self.model(email=email, **extra_fields)  # this to access the model that is associated with this manager
+        if not email:
+            raise ValueError('User must have an email address.')  # do not allow empty email field
+        user = self.model(email=self.normalize_email(email), **extra_fields)  # this to access the model that is associated with this manager; requires that the email is normalized
         user.set_password(password)  # set_password is django built-in method to encrypt the user's input password
         user.save(using=self._db)  # to save to the db session; 'using' used to specify which db, can input multiple dbs; self._db referring to this UserManager's db
+
+        return user
+
+    def create_superuser(self, email, password):
+        """Create and return a new superuser."""
+        user = self.create_user(email, password)
+        user.is_staff = True  # python built-in
+        user.is_superuser = True  # python built-in
+        user.save(using=self._db)
 
         return user
 
