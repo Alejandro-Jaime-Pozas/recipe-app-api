@@ -10,6 +10,7 @@ class AdminSiteTests(TestCase):
     """Tests for Django admin."""
 
     # for some reason, this setUp builtin fn from TestCase class is in camelcase, but this is an exception
+    # order of functions doesn't seem to matter, seems like setUp fn for test cases always runs first; if other tests depend on previous fns, then order should matter for those, not for setUp
     def setUp(self):
         """Create user and client."""
         self.client = Client()  # for use in testing allows POST and GET requests
@@ -42,3 +43,10 @@ class AdminSiteTests(TestCase):
         res = self.client.get(url)
 
         self.assertEqual(res.status_code, 200)  # ensure that the response status is OK
+
+    def test_create_user_page(self):
+        """Test the create user page works."""
+        url = reverse('admin:core_user_add')
+        res = self.client.get(url)
+
+        self.assertEqual(res.status_code, 200)
