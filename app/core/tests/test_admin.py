@@ -35,3 +35,10 @@ class AdminSiteTests(TestCase):
         # assert that the result contains the new non-admin user's name and email keys
         self.assertContains(res, self.user.name)
         self.assertContains(res, self.user.email)
+
+    def test_edit_user_page(self):
+        """Test the user page works."""
+        url = reverse('admin:core_user_change', args=[self.user.id])  # this goes into the 'change' django admin url, providing the user's id that's required in url to access the user change/edit page; this fn should run only after test user created
+        res = self.client.get(url)
+
+        self.assertEqual(res.status_code, 200)  # ensure that the response status is OK
