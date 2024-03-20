@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # add apps here
     'core',
+    'rest_framework',
+    'drf_spectacular',  # this enables drf spectacular to auto generate api docs from yml schema
 ]
 
 MIDDLEWARE = [
@@ -136,3 +138,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # set the default auth user model to the model we built in core.models
 AUTH_USER_MODEL = 'core.User'
+
+# configure the django rest framework to USE the drf_spectacular auto schema generator
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
