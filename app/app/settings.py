@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'core',
     'rest_framework',
     'drf_spectacular',  # this enables drf spectacular to auto generate api docs from yml schema
+    'user',
 ]
 
 MIDDLEWARE = [
