@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # add apps here
     'core',
     'rest_framework',
+    'rest_framework.authtoken',  # to get token authentication abilities for project
     'drf_spectacular',  # this enables drf spectacular to auto generate api docs from yml schema
     'user',
 ]
