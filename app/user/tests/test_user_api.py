@@ -11,6 +11,7 @@ from rest_framework import status  # this to access the different http status ty
 
 # this references the api url endpoint that will be used to create users in user app
 CREATE_USER_URL = reverse('user:create')  # reverse() takes app name first, then endpoint
+TOKEN_URL = reverse('user:token')  # endpoint for creating tokens
 
 
 def create_user(**params):
@@ -68,3 +69,26 @@ class PublicUserApiTests(TestCase):
             email=payload['email']
         ).exists()  # returns bool to check the user doesn't exist since pwd is invalid
         self.assertFalse(user_exists)
+
+    def test_create_token_for_user(self):
+        """Test generates token for valid credentials."""
+        user_details = {
+            'name': 'Test Name',
+            'email': 'test@example.com',
+            'password': 'test-user-password123',
+        }
+        # create a new user
+        create_user(**user_details)
+
+        # add payload to post
+        payload = {
+            'email': user_details['email'],
+            'password': user_details['password'],
+        }
+        # post the payload to the token url api endpoint
+        res = self.client.post(TOKEN_URL, payload)
+
+        # check that a 'token' key is returned in http response data
+        self.assertIn('token', res.data)
+        # check that status code is 200 success
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
