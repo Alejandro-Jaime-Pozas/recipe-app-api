@@ -18,10 +18,11 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/schema/', SpectacularAPIView.as_view(), name='api-schema'),  # this url endpoint will auto generate the SCHEMA for our API
-    path('api/docs/', SpectacularSwaggerView.as_view(url_name='api-schema'), name='api-docs')  # this url endpoint will use our defined schema to create a graphical interface for the api
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='api-schema'), name='api-docs'),  # this url endpoint will use our defined schema to create a graphical interface for the api
+    path('api/user/', include('user.urls')),  # include allows us to include urls from diff apps
 ]
