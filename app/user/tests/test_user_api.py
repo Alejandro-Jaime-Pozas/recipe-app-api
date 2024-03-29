@@ -159,7 +159,7 @@ class PrivateUserApiTests(TestCase):
 
         res = self.client.patch(ME_URL, payload)  # patch as opposed to put updates values in payload, not all of the values from the model/serializer
 
-        self.user.refresh_from_db()
+        self.user.refresh_from_db()  # need to refresh user values from db to get patched updates
         self.assertEqual(self.user.name, payload['name'])
         self.assertTrue(self.user.check_password(payload['password']))
         self.assertEqual(res.status_code, status.HTTP_200_OK)

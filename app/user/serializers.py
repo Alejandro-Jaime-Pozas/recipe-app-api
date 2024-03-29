@@ -25,10 +25,22 @@ class UserSerializer(serializers.ModelSerializer):
         }  # extra_kwargs provides additional settings for fields;
 
     # create method allows us to overwrite the default ModelSerializer create method; this create method will only be called (automatically) if the serializer validation is succesful, meaning all inputs are validated based on restrictions/configuration
+    # validated data is the data passed through the serializer validation
     def create(self, validated_data):
         """Create and return a user with encrypted password."""
         # we want to overwrite the default builtin create method and create user based on our own User model
         return get_user_model().objects.create_user(**validated_data)
+
+    # actually updates the model that the serializer is connected to
+    # instance within update() refers to the specific model instance (not self since self refers to UserSerializerO)
+    def update(self, instance, validated_data):
+        """Update and return user."""
+        password = validated_data.pop('password', None)  # remove pwd from dict if pwd is in validated_data, can be None since password not required to patch user
+        user = super().update(instance, validated_data)  # call the parent ModelSerializer's __init__ method to get access to its attrs and methods
+        if password:
+            user.set_password(password)  # set_password() seems to be a django model db method
+            user.save()
+        return user
 
 
 class AuthTokenSerializer(serializers.Serializer):
