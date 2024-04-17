@@ -1,11 +1,20 @@
-# Define two dictionaries
-dict1 = {'a': 1, 'b': 2}
-dict2 = {'b': 3, 'c': 4}
+# dict1 = {'a': 1, 'b': 2}
+# list_of_tuples = [('b', 3), ('c', 4)]
 
-# Update dict1 with elements from dict2
-dict1.update(**dict2)
+# dict1.update(list_of_tuples)
 
-print("Updated Dictionary:", dict1)
+# print(dict1)  # Output: {'a': 1, 'b': 3, 'c': 4}
+
+
+
+# # Define two dictionaries
+# dict1 = {'a': 1, 'b': 2}
+# dict2 = {'b': 3, 'c': 4}
+
+# # Update dict1 with elements from dict2
+# dict2.update(**dict1)
+
+# print("Updated Dictionary:", dict2)
 
 
 
