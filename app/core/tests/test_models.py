@@ -9,6 +9,7 @@ from django.contrib.auth import get_user_model  # is a helper fn to get the defa
 from core import models  # this to test all of our other built models
 
 
+# DJANGO TESTS WILL AUTO APPLY ALL MIGRATIONS EVERY TIME YOU DO A TEST RUN AND THEN CLEAR THE MIGRATIONS
 # define a test that checks that we can create a user with email and password input successfully
 class ModelTests(TestCase):
     """Test models."""

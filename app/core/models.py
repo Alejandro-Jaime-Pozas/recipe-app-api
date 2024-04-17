@@ -1,6 +1,7 @@
 """
-Databse models.
+Database models.
 """
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -25,7 +26,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password):
-        """Create and return a new superuser."""
+        """Create, save and return a new superuser."""
         user = self.create_user(email, password)
         user.is_staff = True  # python built-in
         user.is_superuser = True  # python built-in
@@ -35,7 +36,7 @@ class UserManager(BaseUserManager):
 
 
 # User is based from abstractbaseuser parent class which contains the functionality for the auth system (but not any fields) and permissionsmixin which contains functionality for permissions and fields req in those permissions
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):  # don't forget to add this model to admin.py
     """User in the system."""
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
@@ -45,3 +46,20 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()  # this to assign the UserManager manager to this User model..when querying the db, this is what the command for >>> User.objects.all() is referring to
 
     USERNAME_FIELD = 'email'  # this to switch default user authentication field from username to email
+
+
+class Recipe(models.Model):  # don't forget to add this model to admin.py
+    """Recipe object."""
+    # set relationship to the user model
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,  # use default user model (we've modified)
+        on_delete=models.CASCADE,  # if the related object is deleted (user) also delete all recipes..
+    )
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)  # text fields hold more content and multiple lines vs CharField
+    time_minutes = models.IntegerField()
+    price = models.DecimalField(max_digits=5, decimal_places=2)
+    link = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return self.title

@@ -49,4 +49,6 @@ class UserAdmin(BaseUserAdmin):
     )
 
 
-admin.site.register(models.User, UserAdmin)  # this to register the given model(s) with the given admin class
+# use admin.site.register() to allow CRUD of different models directly in the admin site
+admin.site.register(models.User, UserAdmin)  # this to register the given model(s) with the given admin class as well (admin class used to modify admin site functionality)
+admin.site.register(models.Recipe)
