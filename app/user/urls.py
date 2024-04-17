@@ -5,7 +5,7 @@ from django.urls import path
 
 from user import views
 
-
+# this app_name is used in 
 app_name = 'user'
 
 urlpatterns = [

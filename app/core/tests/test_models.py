@@ -1,8 +1,12 @@
 """
 Tests for models.
 """
+from decimal import Decimal
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model  # is a helper fn to get the default user model for this project, so if you customize the user model will update here
+
+from core import models  # this to test all of our other built models
 
 
 # define a test that checks that we can create a user with email and password input successfully
@@ -51,3 +55,20 @@ class ModelTests(TestCase):
 
         self.assertTrue(user.is_superuser)  # django built-in to check if superuser
         self.assertTrue(user.is_staff)  # django built-in to check if staff
+
+    def test_create_recipe(self):
+        """Test creating a recipe is successful."""
+        # Create a user first
+        user = get_user_model().objects.create_user(
+            'test@example.com',
+            'testpass123',
+        )
+        recipe = models.Recipe.objects.create(
+            user=user,
+            title='Sample recipe name',
+            time_minutes=5,
+            price=Decimal('5.50'),  # best practice for financial data is int type, using Decimal here for simplicity
+            description='Sample recipe description.',
+        )
+
+        self.assertEqual(str(recipe), recipe.title)  # checking __str__ method for Recipe class is same as recipe instance title

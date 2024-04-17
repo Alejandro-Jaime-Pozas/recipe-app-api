@@ -1,3 +1,14 @@
+# Define two dictionaries
+dict1 = {'a': 1, 'b': 2}
+dict2 = {'b': 3, 'c': 4}
+
+# Update dict1 with elements from dict2
+dict1.update(**dict2)
+
+print("Updated Dictionary:", dict1)
+
+
+
 # from enum import Enum
 
 # class Color(Enum):

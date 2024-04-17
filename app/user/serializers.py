@@ -17,6 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
         # set model to User
         model = get_user_model()  # for some reason here you call fn() vs referencing it
         fields = ['email', 'password', 'name', ]  # fields already included in User model; excluding is_staff and admin related fields here for security
+        # use extra_kwargs for field specifications
         extra_kwargs = {
             'password': {
                 'write_only': True,  # make sure pwd is not read after creation
