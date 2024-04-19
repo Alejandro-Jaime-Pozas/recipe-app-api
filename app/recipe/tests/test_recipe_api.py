@@ -12,11 +12,18 @@ from rest_framework.test import APIClient
 
 from core.models import Recipe
 
-from recipe.serializers import RecipeSerializer
+from recipe.serializers import (
+RecipeSerializer,
+RecipeDetailSerializer,
+)
 
 
 RECIPES_URL = reverse('recipe:recipe-list')  # gets the url endpoint
 
+# defining detail_url as function vs constant (as RECIPES_URL) since the detail requires a unique id
+def detail_url(recipe_id):
+    """Create and return a recipe detail URL."""
+    return reverse('recipe:recipe-detail', args=[recipe_id])  # pass in the name of the view, and recipe id as arg
 
 # Helper function that we will use often to test the CRUD capabilites of recipe API (no 'test' in fn name)
 def create_recipe(user, **params):
@@ -71,7 +78,7 @@ class PrivateRecipeAPITests(TestCase):
         recipes = Recipe.objects.all().order_by('-pk')  # order recipes by pk/id descending (most recent)
         serializer = RecipeSerializer(recipes, many=True)  # serializers can return one item (detail) or a list of items; many is builtin attr to indicate multiple objects
 
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)  # make sure the data dict returned in the http response is equal to serializer.data (which is not clear how that works)
 
     def test_recipe_list_limited_to_user(self):
@@ -89,4 +96,15 @@ class PrivateRecipeAPITests(TestCase):
         serializer = RecipeSerializer(recipes, many=True)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
+
+    def test_get_recipe_detail(self):
+        """Test get recipe detail."""
+        recipe = create_recipe(user=self.user)  # create recipe with default test user from setUp fn
+
+        url = detail_url(recipe.id)  # create a detail url using detail_url defined above
+        res = self.client.get(url)
+
+        serializer = RecipeDetailSerializer(recipe)  # don't pass in Many=True since just one instance
+
         self.assertEqual(res.data, serializer.data)
