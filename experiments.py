@@ -1,11 +1,17 @@
+my_dict = {'a': 1, 'b': 2, 'c': 3}
+
+# Accessing dictionary values dynamically
+print(getattr(my_dict, 'a'))  # Output: 1
+print(getattr(my_dict, 'b'))  # Output: 2
+
+
+
 # dict1 = {'a': 1, 'b': 2}
 # list_of_tuples = [('b', 3), ('c', 4)]
 
 # dict1.update(list_of_tuples)
 
 # print(dict1)  # Output: {'a': 1, 'b': 3, 'c': 4}
-
-
 
 # # Define two dictionaries
 # dict1 = {'a': 1, 'b': 2}
