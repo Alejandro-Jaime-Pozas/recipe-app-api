@@ -48,6 +48,18 @@ class User(AbstractBaseUser, PermissionsMixin):  # don't forget to add this mode
     USERNAME_FIELD = 'email'  # this to switch default user authentication field from username to email
 
 
+class Tag(models.Model):
+    """Tag for filtering recipes."""
+    name = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,  # ref our main user model
+        on_delete=models.CASCADE  # if delete user, delete their tags
+    )
+
+    def __str__(self):
+        return self.name
+
+
 class Recipe(models.Model):  # don't forget to add this model to admin.py
     """Recipe object."""
     # set relationship to the user model
@@ -60,6 +72,7 @@ class Recipe(models.Model):  # don't forget to add this model to admin.py
     time_minutes = models.IntegerField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     link = models.CharField(max_length=255, blank=True)
+    tags = models.ManyToManyField(Tag)  # can place the many to many field in either model, creates an intermediary model with FK to both related models; can either ref Tag or 'Tag' but since Tag is defined later, doesn't work;
 
     def __str__(self):
         return self.title

@@ -9,6 +9,13 @@ from django.contrib.auth import get_user_model  # is a helper fn to get the defa
 from core import models  # this to test all of our other built models
 
 
+def create_user():
+    """Create and return a new user."""
+    return get_user_model().objects.create_user(
+        email='user@example.com',
+        password='password123'
+    )
+
 # DJANGO TESTS WILL AUTO APPLY ALL MIGRATIONS EVERY TIME YOU DO A TEST RUN AND THEN CLEAR THE MIGRATIONS
 # define a test that checks that we can create a user with email and password input successfully
 class ModelTests(TestCase):
@@ -73,3 +80,10 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(recipe), recipe.title)  # checking __str__ method for Recipe class is same as recipe instance title
+
+    def test_create_tag(self):
+        """Test creating a tag is successful."""
+        user = create_user()
+        tag = models.Tag.objects.create(user=user, name='Tag1')
+
+        self.assertEqual(str(tag), tag.name)
