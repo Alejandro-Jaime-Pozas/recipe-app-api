@@ -3,7 +3,7 @@ Serializers for recipe APIs.
 """
 from rest_framework import serializers
 
-from core.models import Recipe
+from core.models import Recipe, Tag
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -27,3 +27,12 @@ class RecipeDetailSerializer(RecipeSerializer):
 
     class Meta(RecipeSerializer.Meta):  # this inherits from parent's Meta to access all of those configs
         fields = RecipeSerializer.Meta.fields + ['description']  # add this new field to existing fields list
+
+
+class TagSerializer(serializers.ModelSerializer):
+    """Serializer for tags."""
+
+    class Meta:
+        model = Tag
+        fields = ['id', 'name']
+        read_only_fields = ['id']  # api user should not be able to modify tag id, only other fields
