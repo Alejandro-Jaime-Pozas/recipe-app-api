@@ -13,14 +13,17 @@ from core.models import Tag
 from recipe.serializers import TagSerializer
 
 
-TAGS_URL = reverse('recipe:tag-list')
+TAGS_URL = reverse('recipe:tag-list')  # url for tag list (to get all tags); first part is app_name in urls.py, second part is auto-generated django url endpoint in urls.py
 
 
-def create_user():
+def detail_url(tag_id):
+    """Create and return a tag detail url."""
+    return reverse('recipe:tag-detail', args=[tag_id])
+
+
+def create_user(email='user@example.com', password='password123'):
     """Create and return a new user."""
-    return get_user_model().objects.create_user(
-        email='user@example.com', password='password123'
-    )
+    return get_user_model().objects.create_user(email=email, password=password)
 
 
 class PublicTagsAPITests(TestCase):
@@ -69,3 +72,16 @@ class PrivateTagsAPITests(TestCase):
         self.assertEqual(len(res.data), 1)  # only expect the auth user's tag to be included, not the other user's
         self.assertEqual(res.data[0]['name'], tag.name)  # to check 1st result matches auth user's created tag
         self.assertEqual(res.data[0]['id'], tag.id)
+
+    def test_update_tag(self):
+        """Test updating a tag."""
+        tag = Tag.objects.create(user=self.user, name='After Dinner')
+
+        payload = {'name': 'Dessert'}
+        url = detail_url(tag.id)
+        res = self.client.patch(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        tag.refresh_from_db()  # required for put/patch
+        self.assertEqual(tag.name, payload.get('name'))

@@ -13,6 +13,7 @@ from recipe import views
 
 router = DefaultRouter()  # use to automatically determine url config
 router.register('recipes', views.RecipeViewSet)  # this will create auto-generated url endpoints based on the functionality of the view (get, post, put, patch, delete)
+router.register('tags', views.TagViewSet)
 
 app_name = 'recipe'  # used to identify this module when using the include, reverse fns elsewhere
 

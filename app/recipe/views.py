@@ -1,18 +1,18 @@
 """
 Views for the recipe APIs.
 """
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins  # mixins are fns you can mix into the view for addtl use
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Recipe
+from core.models import Recipe, Tag
 from . import serializers
 
 
 # this viewset will handle multiple endpoints (list, detail) as well as different actions (GET, POST, PUT, PATCH, DELETE)
 class RecipeViewSet(viewsets.ModelViewSet):
     """View for manage recipe APIs."""
-    serializer_class = serializers.RecipeDetailSerializer  # related serializer model to respond to request
+    serializer_class = serializers.RecipeDetailSerializer  # related serializer model to respond with to request
     queryset = Recipe.objects.all()  # queryset represents the objects available for this viewset
     authentication_classes = [TokenAuthentication]  # users must have a token
     permission_classes = [IsAuthenticated]  # users must be authenticated
@@ -34,3 +34,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):  # serializer is already validated prior to this fn call
         """Create a new recipe."""
         serializer.save(user=self.request.user)  # this to save the active user as the specified recipe user FK
+
+
+class TagViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    """Manage tags in the database."""
+    serializer_class = serializers.TagSerializer
+    queryset = Tag.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        """Filter queryset to authenticated user."""
+        return self.queryset.filter(user=self.request.user).order_by('-name')
