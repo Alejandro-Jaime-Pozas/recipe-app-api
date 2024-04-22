@@ -1,10 +1,10 @@
 # FROM below indicates we're using python version 3.9; python is the name of the docker image, the rest after the : colon is the docker tag
 # alpine is a very basic version of linux, has bare minimum reqs and is efficient
-FROM python:3.9-alpine3.13 
+FROM python:3.9-alpine3.13
 # LABEL maintainer is used so that other developers know who is the person in charge of app
 # USER root # if you want to specify user when building image
 
-LABEL maintainer="londonappdeveloper.com" 
+LABEL maintainer="londonappdeveloper.com"
 
 # recommended when running py in docker container, means you don't want to buffer the output
 ENV PYTHONBUFFERED 1
@@ -12,10 +12,10 @@ ENV PYTHONBUFFERED 1
 # COPY commands indicate to docker that the first input "./etc" should go in the appropiate path in docker (second input part of the COPY stmt)
 # WORKDIR indicates which will be the base directory used to run app and commands in the docker image
 # EXPOSE means expose the port 8000 from our container to our local computer
-COPY ./requirements.txt /tmp/requirements.txt 
+COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
 COPY ./app /app
-WORKDIR /app 
+WORKDIR /app
 EXPOSE 8000
 
 # the && \ is syntax to split code into lines for readability
@@ -23,7 +23,7 @@ EXPOSE 8000
 # adduser cmd then adds a specific user to our image; its best practice to specify a user that is not root/superadmin user for security. user w/no pwd, name the user
 # ARG here is set and then overwritten in docker compose yml file, so that when app runs through docker compose, DEV is set to true, not false
 # if, then, fi stmt is an if stmt in docker shell cmd, we're checking if DEV is set to true and if so installing the dev reqs from txt file
-# apk lines add to the alpine based image some updates. client for postgres so that it can run during prod. --virtual line sets a virtual dependancy package, that can later be remove. packages below that are the ones needed to install so that psycopg2 is installed correctly and 
+# apk lines add to the alpine based image some updates. client for postgres so that it can run during prod. --virtual line sets a virtual dependancy package, that can later be remove. packages below that are the ones needed to install so that psycopg2 is installed correctly and
 ARG DEV=false
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
@@ -40,14 +40,14 @@ RUN python -m venv /py && \
     adduser \
         --disabled-password \
         --no-create-home \
-        django-user 
+        django-user
 
 # ENV PATH variable specifies an environ key which will help reduce code needed when running commands later
 ENV PATH="/py/bin:$PATH"
-# ENV PATH="/py/bin:/py/lib/python3.9/site-packages:$PATH"
+# ENV PATH="/py/bin:/py/lib/python3.9/site-packages:$PATH"  # was testing with this code since python was NOt executing
 
 # USER is last line of docker file; specifies user to switch to after root user has created Dockerfile; this new user will persist for all future docker commands
-USER django-user 
+USER django-user
 
 # check current user in docker linux kernel shell
 # current_user=$(whoami)

@@ -236,13 +236,13 @@ class PrivateRecipeAPITests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         recipes = Recipe.objects.filter(user=self.user)
-        self.assertEqual(recipes.count(), 1)
-        recipe = recipes[0]
+        self.assertEqual(recipes.count(), 1)  # should just be 1 recipe
+        recipe = recipes[0]  # grab the first recipe from user's recipes
         self.assertEqual(recipe.tags.count(), 2)
-        self.assertIn(tag_indian, recipe.tags.all())
+        self.assertIn(tag_indian, recipe.tags.all())  # check that the Tag object named 'Indian' is in recipe's tags
         for tag in payload['tags']:
             exists = recipe.tags.filter(
                 name=tag['name'],
                 user=self.user,
             ).exists()
-            self.assertTrue(exists)
+            self.assertTrue(exists)  # check that each of the posted tags exists within the user's created recipe
