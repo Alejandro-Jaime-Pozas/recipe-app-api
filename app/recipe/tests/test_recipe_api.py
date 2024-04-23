@@ -13,8 +13,8 @@ from rest_framework.test import APIClient
 from core.models import Recipe, Tag
 
 from recipe.serializers import (
-RecipeSerializer,
-RecipeDetailSerializer,
+    RecipeSerializer,
+    RecipeDetailSerializer,
 )
 
 
@@ -246,3 +246,42 @@ class PrivateRecipeAPITests(TestCase):
                 user=self.user,
             ).exists()
             self.assertTrue(exists)  # check that each of the posted tags exists within the user's created recipe
+
+    def test_create_tag_on_update(self):
+        """Test creating tag when updating a recipe."""
+        recipe = create_recipe(user=self.user)
+        payload = {'tags': [{'name': 'Lunch'}]}  # payload contains list of just one tag
+        url = detail_url(recipe.id)
+        res = self.client.patch(url, payload, format='json')  # only update recipe values in the payload
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        new_tag = Tag.objects.get(user=self.user, name='Lunch')  # get the created tag from the recipe obj
+        self.assertIn(new_tag, recipe.tags.all())  # check tag in recipe tags; no need for refresh_from_db() since we're querying recipe.tags.all(), not the new_tag obj
+
+    def test_update_recipe_assign_tag(self):
+        """Test assigning an existing tag when updating a recipe."""
+        tag_breakfast = Tag.objects.create(user=self.user, name='Breakfast')
+        recipe = create_recipe(user=self.user)
+        recipe.tags.add(tag_breakfast)
+
+        tag_lunch = Tag.objects.create(user=self.user, name='Lunch')
+        payload = {'tags': [{'name': 'Lunch'}]}
+        url = detail_url(recipe.id)
+        res = self.client.patch(url, payload, format='json')  # this patch somehow utilizes either the model or serializes update() builtin method
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn(tag_lunch, recipe.tags.all())  # check lunch tag replaced breakfast tag
+        self.assertNotIn(tag_breakfast, recipe.tags.all())  # check breakfast tag no longer exists with that name
+
+    def test_clear_recipe_tags(self):
+        """Test clearing a recipe's tags."""
+        tag = Tag.objects.create(user=self.user, name='Desert')
+        recipe = create_recipe(user=self.user)
+        recipe.tags.add(tag)  # add new tag to the new recipe
+
+        payload = {'tags': []}  # pass in empty list for tags
+        url = detail_url(recipe.id)
+        res = self.client.patch(url, payload, format='json')  # json format since 'tags' is object and not string..
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(recipe.tags.count(), 0)  # make sure there's no objects in the tags field for this recipe

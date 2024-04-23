@@ -41,6 +41,7 @@ class PublicTagsAPITests(TestCase):
 
 class PrivateTagsAPITests(TestCase):
     """Test authenticated API requests."""
+    # looks like create Tag isn't a test here since we test it in test_recipe_api.py
 
     def setUp(self):
         self.user = create_user()
