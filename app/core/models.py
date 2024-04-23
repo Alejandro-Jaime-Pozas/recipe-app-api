@@ -60,6 +60,18 @@ class Tag(models.Model):
         return self.name
 
 
+class Ingredient(models.Model):
+    """Ingredient for recipes."""
+    name = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Recipe(models.Model):  # don't forget to add this model to admin.py
     """Recipe object."""
     # set relationship to the user model
@@ -73,6 +85,7 @@ class Recipe(models.Model):  # don't forget to add this model to admin.py
     price = models.DecimalField(max_digits=5, decimal_places=2)
     link = models.CharField(max_length=255, blank=True)
     tags = models.ManyToManyField(Tag)  # can place the many to many field in either model, creates an intermediary model with FK to both related models; can either ref Tag or 'Tag' but since Tag is defined later, doesn't work;
+    ingredients = models.ManyToManyField(Ingredient)
 
     def __str__(self):
         return self.title
