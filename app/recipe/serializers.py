@@ -31,11 +31,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id']  # api user should not be able to modify recipe id, only other fields
 
-    # override the create() fn for ModelSerializer in order to create recipe serializer as well as its tags serializers separately
-    def create(self, validated_data):
-        """Create a recipe."""
-        tags = validated_data.pop('tags', [])  # remove the 'tags' field from validated_data and store it, default to [] if no data
-        recipe = Recipe.objects.create(**validated_data)  # create the recipe with updated validated_data (no tags in data)
+
+    def _get_or_create_tags(self, tags, recipe):
+        """Handle getting or creating tags as needed."""
         auth_user = self.context['request'].user  # context is a serializer variable passed in from its view
         for tag in tags:
             tag_obj, created = Tag.objects.get_or_create(  # get or create gets or creates an object
@@ -44,7 +42,29 @@ class RecipeSerializer(serializers.ModelSerializer):
             )
             recipe.tags.add(tag_obj)
 
+    # override the create() fn for ModelSerializer in order to create recipe serializer as well as its tags serializers separately
+    def create(self, validated_data):
+        """Create a recipe."""
+        tags = validated_data.pop('tags', [])  # remove the 'tags' field from validated_data dict and store it, default to [] if no data
+        recipe = Recipe.objects.create(**validated_data)  # create the recipe with updated validated_data (no tags in data)
+        self._get_or_create_tags(tags, recipe)
+
         return recipe
+
+    # override update method for serializers, includes the instance variable which is the existing instance to update
+    def update(self, instance, validated_data):  # instance is a RecipeSerializer object
+        """Update recipe."""
+        tags = validated_data.pop('tags', None)
+        # if tags contains tags, clear all of them, then get or create tags
+        if tags is not None:  # if tags is an empty list (as when it's created or tags are removed) this will run
+            instance.tags.clear()
+            self._get_or_create_tags(tags, instance)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)  # for each validated key pair, set every instance's keys to the new value
+
+        instance.save()
+        return instance
 
 
 # inherit from the RecipeSerializer defined above to extend it

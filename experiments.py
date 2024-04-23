@@ -1,8 +1,11 @@
-my_dict = {'a': 1, 'b': 2, 'c': 3}
+print('' == [])
 
-# Accessing dictionary values dynamically
-print(getattr(my_dict, 'a'))  # Output: 1
-print(getattr(my_dict, 'b'))  # Output: 2
+
+# my_dict = {'a': 1, 'b': 2, 'c': 3}
+
+# # Accessing dictionary values dynamically
+# print(getattr(my_dict, 'a'))  # Output: 1
+# print(getattr(my_dict, 'b'))  # Output: 2
 
 
 
