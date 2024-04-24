@@ -9,13 +9,22 @@ from core.models import Recipe, Tag, Ingredient
 from . import serializers
 
 
+# ADDED THIS MANUALLY, MAKE SURE PERMISSIONS AND AUTH WORKS ACROSS ALL API ENDPOINTS IN SWAGGER API SITE
+class BaseAuthPermissionsViewSet():
+    authentication_classes = [TokenAuthentication]  # users must have a token
+    permission_classes = [IsAuthenticated]  # users must be authenticated
+
+
 # this viewset will handle multiple endpoints (list, detail) as well as different actions (GET, POST, PUT, PATCH, DELETE)
-class RecipeViewSet(viewsets.ModelViewSet):
+class RecipeViewSet(
+    BaseAuthPermissionsViewSet,
+    viewsets.ModelViewSet
+):
     """View for manage recipe APIs."""
     serializer_class = serializers.RecipeDetailSerializer  # related serializer model to respond with to request
     queryset = Recipe.objects.all()  # queryset represents the objects available for this viewset
-    authentication_classes = [TokenAuthentication]  # users must have a token
-    permission_classes = [IsAuthenticated]  # users must be authenticated
+    # authentication_classes = [TokenAuthentication]  # users must have a token
+    # permission_classes = [IsAuthenticated]  # users must be authenticated
 
     # overriding the get_queryset fn since need to create specific queryset for user accessing it (otherwise would return result of all global recipes)
     def get_queryset(self):
@@ -36,35 +45,27 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)  # this to save the active user as the specified recipe user FK
 
 
-class TagViewSet(
+class BaseRecipeAttrViewSet(
+    BaseAuthPermissionsViewSet,
     mixins.DestroyModelMixin,
     mixins.UpdateModelMixin,
     mixins.ListModelMixin,  # important to ALWAYS DEFINE MIXINS BEFORE VIEWSETS or they'll be overwritten
     viewsets.GenericViewSet,
 ):
+    """Base viewset for recipe attributes."""
+
+    def get_queryset(self):
+        """Filter queryset to authenticated user."""
+        return self.queryset.filter(user=self.request.user).order_by('-name')
+
+
+class TagViewSet(BaseRecipeAttrViewSet):
     """Manage tags in the database."""
     serializer_class = serializers.TagSerializer
     queryset = Tag.objects.all()
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        """Filter queryset to authenticated user."""
-        return self.queryset.filter(user=self.request.user).order_by('-name')
 
 
-class IngredientViewSet(
-    mixins.DestroyModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet,
-):
+class IngredientViewSet(BaseRecipeAttrViewSet):
     """Manage ingredients in the database."""
     serializer_class = serializers.IngredientSerializer
     queryset = Ingredient.objects.all()
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        """Filter queryset to authenticated user."""
-        return self.queryset.filter(user=self.request.user).order_by('-name')

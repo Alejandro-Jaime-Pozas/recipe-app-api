@@ -60,8 +60,8 @@ class AuthTokenSerializer(serializers.Serializer):
         password = attrs.get('password')
         # use authenticate method which requires the request as well as the credentials
         user = authenticate(
-            request=self.context.get('request'),  # check why this field is required
-            username=email,  # we're using the email as the username..
+            request=self.context.get('request'),  # serializers have a context field builtin with request field
+            username=email,  # we're using the email as the username..(since our default user model is AbstractBaseUser class)
             password=password,
         )
         # tell the user that we're unable to authenticate with their credentials if no user is returned above
