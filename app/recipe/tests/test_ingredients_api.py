@@ -73,4 +73,23 @@ class PrivateIngredientsAPITests(TestCase):
 
     def test_update_ingredient(self):
         """Test updating an ingredient."""
-        
+        ingredient = Ingredient.objects.create(user=self.user, name='Cilantro')
+
+        payload = {'name': 'Coriander'}
+        url = detail_url(ingredient.id)
+        res = self.client.patch(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        ingredient.refresh_from_db()  # need to refresh since it's already been stored in variable above, the created version, not the updated version
+        self.assertEqual(ingredient.name, payload['name'])
+
+    def test_delete_ingredient(self):
+        """Test deleting an ingredient."""
+        ingredient = Ingredient.objects.create(user=self.user, name='Lettuce')
+
+        url = detail_url(ingredient.id)
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        ingredients = Ingredient.objects.filter(user=self.user)
+        self.assertFalse(ingredients.exists())
