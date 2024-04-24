@@ -16,6 +16,10 @@ from recipe.serializers import IngredientSerializer
 INGREDIENTS_URL = reverse('recipe:ingredient-list')
 
 
+def detail_url(ingredient_id):
+    """Create and return an ingredient detail url."""
+    return reverse('recipe:ingredient-detail', args=[ingredient_id])  # find the django app named 'recipe', its 'ingredient-detail' auto-generated view, with endpoint of ingredient_id and return the complete url for a single ingredient
+
 def create_user(email='user@example.com', password='password123'):
     """Create and return a user."""
     return get_user_model().objects.create_user(email=email, password=password)
@@ -66,3 +70,7 @@ class PrivateIngredientsAPITests(TestCase):
         self.assertEqual(len(res.data), 1)  # only expecting the ingredient linked to the user
         self.assertEqual(res.data[0]['name'], ingredient.name)  # checking name is auth user created ingredient name
         self.assertEqual(res.data[0]['id'], ingredient.id)  # checking ingredient id from res = auth user ingredient id
+
+    def test_update_ingredient(self):
+        """Test updating an ingredient."""
+        
