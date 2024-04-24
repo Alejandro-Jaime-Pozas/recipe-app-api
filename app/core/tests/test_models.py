@@ -1,5 +1,5 @@
 """
-Tests for models.
+Tests for models. Unlike api tests, no requests needed here, just internal.
 """
 from decimal import Decimal
 
