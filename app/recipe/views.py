@@ -10,14 +10,14 @@ from . import serializers
 
 
 # ADDED THIS MANUALLY, MAKE SURE PERMISSIONS AND AUTH WORKS ACROSS ALL API ENDPOINTS IN SWAGGER API SITE
-class BaseAuthPermissionsViewSet():
+class BaseAuthPermissions():
     authentication_classes = [TokenAuthentication]  # users must have a token
     permission_classes = [IsAuthenticated]  # users must be authenticated
 
 
 # this viewset will handle multiple endpoints (list, detail) as well as different actions (GET, POST, PUT, PATCH, DELETE)
 class RecipeViewSet(
-    BaseAuthPermissionsViewSet,
+    BaseAuthPermissions,
     viewsets.ModelViewSet
 ):
     """View for manage recipe APIs."""
@@ -46,7 +46,7 @@ class RecipeViewSet(
 
 
 class BaseRecipeAttrViewSet(
-    BaseAuthPermissionsViewSet,
+    BaseAuthPermissions,
     mixins.DestroyModelMixin,
     mixins.UpdateModelMixin,
     mixins.ListModelMixin,  # important to ALWAYS DEFINE MIXINS BEFORE VIEWSETS or they'll be overwritten

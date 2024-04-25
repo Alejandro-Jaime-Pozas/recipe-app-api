@@ -23,13 +23,14 @@ EXPOSE 8000
 # adduser cmd then adds a specific user to our image; its best practice to specify a user that is not root/superadmin user for security. user w/no pwd, name the user
 # ARG here is set and then overwritten in docker compose yml file, so that when app runs through docker compose, DEV is set to true, not false
 # if, then, fi stmt is an if stmt in docker shell cmd, we're checking if DEV is set to true and if so installing the dev reqs from txt file
-# apk lines add to the alpine based image some updates. client for postgres so that it can run during prod. --virtual line sets a virtual dependancy package, that can later be remove. packages below that are the ones needed to install so that psycopg2 is installed correctly and
+# apk add lines: first line indicates dependencies to install and persist after image creation; second line --virtual adds temp when building image but then removes dependencies for efficiency
+# apk lines: client for postgres so that it can run during prod. jpeg-dev is req (needs to be installed) to run Pillow package for image mgmt. --virtual line sets a virtual dependancy package, that can later be removed. packages below that are the ones needed to install so that psycopg2 is installed correctly and
 ARG DEV=false
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
-    apk add --update --no-cache postgresql-client && \
+    apk add --update --no-cache postgresql-client jpeg-dev && \
     apk add --update --no-cache --virtual .tmp-build-deps \
-        build-base postgresql-dev musl-dev && \
+        build-base postgresql-dev musl-dev zlib zlib-dev && \
     /py/bin/pip install -r /tmp/requirements.txt && \
     if [ $DEV = "true" ]; \
         then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
@@ -40,7 +41,15 @@ RUN python -m venv /py && \
     adduser \
         --disabled-password \
         --no-create-home \
-        django-user
+        django-user && \
+    # need to create static and media file directories with django-user permissions, not root user else run into issues
+    # '-p' used to indicate all subdirectories to be made in path specified after /vol...
+    mkdir -p /vol/web/media && \
+    mkdir -p /vol/web/static && \
+    # chown to change owner; -R for recursive; <owner>:<group> used to indicate owner and group of /vol
+    chown -R django-user:django-user /vol && \
+    # change mode (755) to change permissions in /vol directory, so owner and group can make any changes
+    chmod -R 755 /vol
 
 # ENV PATH variable specifies an environ key which will help reduce code needed when running commands later
 ENV PATH="/py/bin:$PATH"

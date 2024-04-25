@@ -1,6 +1,8 @@
 """
 Database models.
 """
+import uuid, os
+
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import (
@@ -8,6 +10,15 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+
+
+# path to indicate where we want to store our users' image files
+def recipe_image_file_path(instance, filename):
+    """Generate a file path for new recipe image."""
+    ext = os.path.splitext(filename)[1]  # stripping the ext ie. jpg, png, etc
+    filename = f'{uuid.uuid4()}{ext}'  # creating a uuid and keeping the ext
+
+    return os.path.join('uploads', 'recipe', filename)  # this ensures that the string is created in correct format for whichever op system is running
 
 
 # this to manage how the User model will work
@@ -86,6 +97,7 @@ class Recipe(models.Model):  # don't forget to add this model to admin.py
     link = models.CharField(max_length=255, blank=True)
     tags = models.ManyToManyField(Tag)  # can place the many to many field in either model, creates an intermediary model with FK to both related models; can either ref Tag or 'Tag' but since Tag is defined later, doesn't work;
     ingredients = models.ManyToManyField(Ingredient)
+    image = models.ImageField(null=True, upload_to=recipe_image_file_path)  # just pass in a ref to fn in upload_to, don't call the fn
 
     def __str__(self):
         return self.title

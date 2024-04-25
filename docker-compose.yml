@@ -3,7 +3,7 @@ version: "3.9"
 
 # services - docker compose files usually include 1 or more services to be used; these services should be equivalent to some form of online server (a database, django app, frontend app, etc)
 # app is the name of our service. this is the service that will run the docker file
-# build > context specifies that we want to build the docker file inside the cur directory
+# build > context specifies that we want to build the Dockerfile that's inside the curr directory
 # args: - DEV=true sets an argument in the build folder w k,v = DEV,true
 # ports connects port 8000 from our local machine to port 8000 in docker cointainer. this is how can access network to connect to docker server
 # volumes are a way to map our directories in local to the docker container so they're located at same level within their contexts; ie if you create filed in one place, should update in the other
@@ -17,8 +17,10 @@ services:
     ports:
       - "8000:8000"
     # volumes maps the current ./app in local directory to the cotainer's equivalent /app so everything is synced
+    # static data for dev is linked to /vol/web in container system
     volumes:
       - ./app:/app
+      - dev-static-data:/vol/web
     # with command you can input multiple commands in multiple lines
     command: >
       sh -c "python manage.py wait_for_db &&
@@ -49,3 +51,4 @@ services:
 volumes:
   # name of volume below indicates name that will be appended to app's volume name in docker
   dev-db-data:
+  dev-static-data:

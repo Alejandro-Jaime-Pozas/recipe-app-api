@@ -1,6 +1,7 @@
 """
 Tests for models. Unlike api tests, no requests needed here, just internal.
 """
+from unittest.mock import patch  # tool used to mock functions for purposes of testing
 from decimal import Decimal
 
 from django.test import TestCase
@@ -97,3 +98,14 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(ingredient), ingredient.name)
+
+    # create a test to return a unique url path for a user uploaded media file
+    # we're using the patch decorator to modify the uuid functionality to mock its behavior of creating a uuid
+    @patch('core.models.uuid.uuid4')
+    def test_recipe_file_name_uuid(self, mock_uuid):
+        """Test generating image path."""
+        uuid = 'test-uuid'  # our mocked response for the test
+        mock_uuid.return_value = uuid  # setting the mock_uuid's return value (which not sure if builtin) to uuid
+        file_path = models.recipe_image_file_path(None, 'example.jpg')  # path to image which will be uploaded
+
+        self.assertEqual(file_path, f'uploads/recipe/{uuid}.jpg')
