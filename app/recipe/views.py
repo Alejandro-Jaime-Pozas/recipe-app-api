@@ -1,7 +1,9 @@
 """
 Views for the recipe APIs.
 """
-from rest_framework import viewsets, mixins  # mixins are fns you can mix into the view for addtl use
+from rest_framework import viewsets, mixins, status  # mixins are fns you can mix into the view for addtl use
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -37,12 +39,28 @@ class RecipeViewSet(
         # if the action is a list action (not detail) then return a list, else detail
         if self.action == 'list':
             return serializers.RecipeSerializer  # return reference to class, not an instance
+        elif self.action == 'upload_image':  # upload_image is a custom action we define in our recipe viewset
+            return serializers.RecipeImageSerializer
         return self.serializer_class
 
     # use builtin perform_create to modify how django saves a serializer/model (should only apply to POST method)
     def perform_create(self, serializer):  # serializer is already validated prior to this fn call
         """Create a new recipe."""
         serializer.save(user=self.request.user)  # this to save the active user as the specified recipe user FK
+
+    # adding a custom action with action decorator to handle user image upload
+    @action(methods=['POST'], detail=True, url_path='upload-image')  # POST only for image creation; detail True means for a specific image, not list; url path is a custom url path where our action takes place
+    def upload_image(self, request, pk=None):
+        """Upload an image to a recipe."""
+        recipe = self.get_object()  # gets the object based on serializer class/queryset using its id
+        serializer = self.get_serializer(recipe, data=request.data)  # will trigger fn get_serializer_class and return recipe image serializer as specified there
+
+        # returning responses here like flask routes files if requests are valid/invalid
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BaseRecipeAttrViewSet(
