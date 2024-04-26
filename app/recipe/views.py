@@ -1,6 +1,13 @@
 """
 Views for the recipe APIs.
 """
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes,
+)
+
 from rest_framework import viewsets, mixins, status  # mixins are fns you can mix into the view for addtl use
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -17,6 +24,23 @@ class BaseAuthPermissions():
     permission_classes = [IsAuthenticated]  # users must be authenticated
 
 
+# update the api docs auto generated in swagger/drf spectacular schema
+@extend_schema_view(
+    list=extend_schema(  # 'list' means extend the schema for the list endpoint
+        parameters=[  # to define optional parameters than can be passed in for this list API view
+            OpenApiParameter(  # to specify the details of a parameter that can be accepted in API requests
+                'tags',
+                OpenApiTypes.STR,  # str type, since this will be a comma separated str of IDs
+                description='Comma separated list of tag IDs to filter',  # displayed for API users
+            ),
+            OpenApiParameter(
+                'ingredients',
+                OpenApiTypes.STR,
+                description='Comma separated list of ingredient IDs to filter'
+            )
+        ]
+    )
+)
 # this viewset will handle multiple endpoints (list, detail) as well as different actions (GET, POST, PUT, PATCH, DELETE)
 class RecipeViewSet(
     BaseAuthPermissions,
@@ -28,10 +52,26 @@ class RecipeViewSet(
     # authentication_classes = [TokenAuthentication]  # users must have a token
     # permission_classes = [IsAuthenticated]  # users must be authenticated
 
+    def _params_to_ints(self, qs):
+        """Convert a list of strings to integers."""
+        return [int(str_id) for str_id in qs.split(',')]  # string in qs looks like this: "1,2,3"
+
     # overriding the get_queryset fn since need to create specific queryset for user accessing it (otherwise would return result of all global recipes)
     def get_queryset(self):
-        """Retrieve recipes for authenticated user."""
-        return self.queryset.filter(user=self.request.user).order_by('-id')  # self.request trails back to parent View class's request object. request contains headers, query params, data (request body), and user if auth is required
+        """Retrieve recipes for the authenticated user."""
+        tags = self.request.query_params.get('tags')  # query_params seems to be like request.user which is included in django view request objects
+        ingredients = self.request.query_params.get('ingredients')
+        queryset = self.queryset
+        if tags:
+            # return the queryset of recipes filtered/containing the tags
+            tag_ids = self._params_to_ints(tags)
+            queryset = queryset.filter(tags__id__in=tag_ids)
+        if ingredients:
+            ingredients_ids = self._params_to_ints(ingredients)
+            queryset = queryset.filter(ingredients__id__in=ingredients_ids)
+        return queryset.filter(
+            user=self.request.user
+        ).order_by('-id').distinct() # self.request trails back to parent View class's request object. request contains headers, query params, data (request body), and user if auth is required
 
     # manage the serializer returned based on the request
     def get_serializer_class(self):

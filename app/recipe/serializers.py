@@ -100,7 +100,7 @@ class RecipeDetailSerializer(RecipeSerializer):
     """Serializer for recipe detail view."""
 
     class Meta(RecipeSerializer.Meta):  # this inherits from parent's Meta to access all of those configs
-        fields = RecipeSerializer.Meta.fields + ['description']  # add this new field to existing fields list
+        fields = RecipeSerializer.Meta.fields + ['description', 'image']  # add this new field to existing fields list
 
 
 # need a separate serializer for images since its best practice to create different APIs/serializers for different data types, in this case image is diff from the json/text content of recipe serializer
