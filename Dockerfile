@@ -14,6 +14,8 @@ ENV PYTHONBUFFERED 1
 # EXPOSE means expose the port 8000 from our container to our local computer
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
+# DEPLOYMENT: /scripts will be helper scripts run by our docker app
+COPY ./scripts /scripts
 COPY ./app /app
 WORKDIR /app
 EXPOSE 8000
@@ -25,12 +27,14 @@ EXPOSE 8000
 # if, then, fi stmt is an if stmt in docker shell cmd, we're checking if DEV is set to true and if so installing the dev reqs from txt file
 # apk add lines: first line indicates dependencies to install and persist after image creation; second line --virtual adds temp when building image but then removes dependencies for efficiency
 # apk lines: client for postgres so that it can run during prod. jpeg-dev is req (needs to be installed) to run Pillow package for image mgmt. --virtual line sets a virtual dependancy package, that can later be removed. packages below that are the ones needed to install so that psycopg2 is installed correctly and
+# linux-headers package is required for our uWSGI server installation; uWSGI server connects our app to a web server; only temporarily needed
 ARG DEV=false
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     apk add --update --no-cache postgresql-client jpeg-dev && \
     apk add --update --no-cache --virtual .tmp-build-deps \
-        build-base postgresql-dev musl-dev zlib zlib-dev && \
+    # DEPLOYMENT: add linux-headers
+        build-base postgresql-dev musl-dev zlib zlib-dev linux-headers && \
     /py/bin/pip install -r /tmp/requirements.txt && \
     if [ $DEV = "true" ]; \
         then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
@@ -49,14 +53,22 @@ RUN python -m venv /py && \
     # chown to change owner; -R for recursive; <owner>:<group> used to indicate owner and group of /vol
     chown -R django-user:django-user /vol && \
     # change mode (755) to change permissions in /vol directory, so owner and group can make any changes
-    chmod -R 755 /vol
+    chmod -R 755 /vol && \
+    # +x /scripts ensures that scripts dir is executable
+    chmod -R +x /scripts
 
-# ENV PATH variable specifies an environ key which will help reduce code needed when running commands later
-ENV PATH="/py/bin:$PATH"
+# DEPLOYMENT: ENV PATH variable specifies an environ key which will help reduce code needed when running commands later
+ENV PATH="/scripts:/py/bin:$PATH"
+# # Dev: OLD ENV PATH for dev build testing variable specifies an environ key which will help reduce code needed when running commands later
+# ENV PATH="/py/bin:$PATH"
 # ENV PATH="/py/bin:/py/lib/python3.9/site-packages:$PATH"  # was testing with this code since python was NOt executing
 
 # USER is last line of docker file; specifies user to switch to after root user has created Dockerfile; this new user will persist for all future docker commands
 USER django-user
+
+# DEPLOYMENT: command run.sh is the CLI script that is going to run our entire application on a web server; this is the default command; we can overwrite in docker compose
+CMD ["run.sh"]
+
 
 # check current user in docker linux kernel shell
 # current_user=$(whoami)
