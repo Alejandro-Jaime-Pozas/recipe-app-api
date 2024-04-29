@@ -1,0 +1,52 @@
+version: "3.9"
+
+# create a service called app, use this dir '.' as context for build extraction
+# restart: always means if app crashes, this will auto-restart the app to avoid manual restart
+# volume called static-data to serve our static data through the ngnix proxy '/vol/web'
+# environment variables are defined. DB_HOST refers to our db service we create. all other env variables are stored in the .env config file
+# depends on to set up dependency and make sure it's always available within the server/network, if not app won't run
+services:
+  app:
+    build:
+      context: .
+    restart: always
+    volumes:
+      - static-data:/vol/web
+    environment:
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - SECRET_KEY=${DJANGO_SECRET_KEY}
+      - ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+    depends_on:
+      - db
+
+  # db to set up a db service that creates a postgres image and stores it in a volume, then sets it up using env variables
+  db:
+    image: postgres:13-alpine
+    restart: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+
+  # setup proxy service that uses ./proxy for setup and depends on app service, so that the proxy requires the app service to be running
+  # ports 80:8000 sets up the local server port 80 to match the 8000 port in our cloud server
+  proxy:
+    build:
+      context: ./proxy
+    restart: always
+    depends_on:
+      - app
+    ports:
+      - 80:8000
+    volumes:
+      - static-data:/vol/static
+
+# set up the volumes mentioned above to store and persist our database data and our static file data
+volumes:
+  postgres-data:
+  static-data:
