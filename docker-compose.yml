@@ -27,11 +27,13 @@ services:
              python manage.py migrate &&
              python manage.py runserver 0.0.0.0:8000"
     # matching values here from the 'db' service below's environment
+    # set DEBUG to 1 so that settings.py in app sets our local running app to debug/dev mode
     environment:
       - DB_HOST=db
       - DB_NAME=devdb
       - DB_USER=devuser
       - DB_PASS=changeme
+      - DEBUG=1
     # this tells docker-compose that this django app depends on the db service, so if db doesn't work, django app too
     depends_on:
       - db

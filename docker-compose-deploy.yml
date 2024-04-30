@@ -34,7 +34,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASS}
 
   # setup proxy service that uses ./proxy for setup and depends on app service, so that the proxy requires the app service to be running
-  # ports 80:8000 sets up the local server port 80 to match the 8000 port in our cloud server
+  # ports 80:8000 sets up the server port 80 from docker container to match the 8000 port in our cloud server; if you change the first 80 to 8000 value, will run on local host. 80 seems to be the docker default port
   proxy:
     build:
       context: ./proxy
