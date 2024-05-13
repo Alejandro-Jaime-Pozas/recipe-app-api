@@ -1,15 +1,24 @@
 # recipe-app-api
 Recipe API project.
 
-- requirements.dev.txt file is used for dependencies only required by development teams
+## Quickstart
 
-proxy/default.conf.tpl file:
-    - this file serves as a configuration block for the server (nginx) that will run our django app
-    - listen...
-        - set the port that the server will listen on (as a variable ie. ${<variable>})
-        - location blocks are used to define url mappings as you want them configured
-        - location /static: server will set contents in /vol/static from our docker build/container to /static url endpoint
-        - location /: setting our uwsgi server to run on a host and port; include to include params from http requests in our uwsgi server; client max body size sets a limit to the size of the file that the server can accept from our users (10 megabytes for our user images)
+### Overview
 
-proxy/uwsgi_params:
-    - copy and paste reqs for uwsgi params from their website https://uwsgi-docs.readthedocs.io/en/latest/Nginx.html
+This is a Django rest_framework application to be used as a backend rest api framework for a frontend application by any developer.
+
+Use the following link to view the API documentation:
+
+http://ec2-100-27-216-147.compute-1.amazonaws.com/api/docs
+
+
+### Using the API
+
+To start using the API, you can take the following steps:
+
+1. Under `user`, create a post request at /api/user/create/ to create your user.
+2. Under `user`, create a post request at /api/user/token/ to generate a token.
+3. Copy the generated token and click `Authorize` button at top of page.
+4. Under `tokenAuth` Value field, input `Token` and a ' ' space character and paste your token to authenticate.
+5. Under `user`, get your user object at /api/user/me to verify that you're newly created user is authenticated.
+6. You are now ready to create recipes! Just make sure you turn the stove off when you're done. 
