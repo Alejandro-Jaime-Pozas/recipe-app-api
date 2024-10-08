@@ -9,8 +9,8 @@ LABEL maintainer="londonappdeveloper.com"
 # recommended when running py in docker container, means you don't want to buffer the output
 ENV PYTHONBUFFERED 1
 
-# COPY commands indicate to docker that the first input "./etc" should go in the appropiate path in docker (second input part of the COPY stmt)
-# WORKDIR indicates which will be the base directory used to run app and commands in the docker image
+# COPY commands indicate to docker that the first input "./etc" should go in the appropiate path in docker created system (linux) (second input part of the COPY stmt)
+# WORKDIR indicates which will be the base directory used to run app and commands in the docker container
 # EXPOSE means expose the port 8000 from our container to our local computer
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
