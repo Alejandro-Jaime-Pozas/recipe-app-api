@@ -1,6 +1,6 @@
 # AFTER CREATING THIS FILE, CHECK GITHUB ACTIONS AND REFRESH IT ONCE YOU PUSH CHANGES IT WILL UPDATE
 # the --- signifies that this is a yml file to github
-# ---
+---
 # name is name that appears in github actions
 name: Checks
 
