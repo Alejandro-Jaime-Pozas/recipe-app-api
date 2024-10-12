@@ -14,7 +14,7 @@ ENV PYTHONBUFFERED 1
 # EXPOSE means expose the port 8000 from our container to our local computer
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
-# DEPLOYMENT: /scripts will be helper scripts run by our docker app
+# DEPLOYMENT /scripts will be helper scripts run by our docker app
 COPY ./scripts /scripts
 COPY ./app /app
 WORKDIR /app
@@ -50,7 +50,8 @@ RUN python -m venv /py && \
     # '-p' used to indicate all subdirectories to be made in path specified after /vol...
     mkdir -p /vol/web/media && \
     mkdir -p /vol/web/static && \
-    # chown to change owner; -R for recursive; <owner>:<group> used to indicate owner and group of /vol
+    # chown to change owner;
+    # -R for recursive; <owner>:<group> used to indicate owner and group of /vol
     chown -R django-user:django-user /vol && \
     # change mode (755) to change permissions in /vol directory, so owner and group can make any changes
     chmod -R 755 /vol && \
