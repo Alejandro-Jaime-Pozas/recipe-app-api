@@ -1,5 +1,5 @@
 # version of python to be used in docker for maintainability
-version: "3.9"
+# version: "3.9"
 
 # services - docker compose files usually include 1 or more services to be used; these services should be equivalent to some form of application (a database, django app, frontend app, etc)
 # app is the name of our service. this is the service that will run the docker file image

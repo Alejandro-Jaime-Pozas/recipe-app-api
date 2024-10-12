@@ -1,4 +1,4 @@
-version: "3.9"
+# version: "3.9"  # this is obsolete in docker now
 
 # create a service called app, use this dir '.' as context for build extraction
 # restart: always means if app crashes, this will auto-restart the app to avoid manual restart
