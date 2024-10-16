@@ -30,7 +30,7 @@ urlpatterns = [
     path('api/schema/', SpectacularAPIView.as_view(), name='api-schema'),  # this url endpoint will auto generate the SCHEMA for our API
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='api-schema'), name='api-docs'),  # this url endpoint will use our defined schema to create a graphical interface for the api
     path('api/user/', include('user.urls')),  # include allows us to include urls from diff apps
-    path('api/recipe/', include('recipe.urls')),  #
+    path('api/recipe/', include('recipe.urls')),
 ]
 
 # if dev mode (debugging) then include in urlpatterns a path to our mock user upload media files
