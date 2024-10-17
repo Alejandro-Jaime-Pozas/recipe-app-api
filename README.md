@@ -21,4 +21,4 @@ To start using the API, you can take the following steps:
 3. Copy the generated token and click `Authorize` button at top of page.
 4. Under `tokenAuth` Value field, input `Token` and a ' ' space character and paste your token to authenticate.
 5. Under `user`, get your user object at /api/user/me to verify that you're newly created user is authenticated.
-6. You are now ready to create recipes! Just make sure you turn the stove off when you're done. 
+6. You are now ready to create recipes! Just make sure you turn the stove off/logout when you're done.

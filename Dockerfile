@@ -28,6 +28,7 @@ EXPOSE 8000
 # apk add lines: first line indicates dependencies to install and persist after image creation; second line --virtual adds temp when building image but then removes dependencies for efficiency
 # apk lines: client for postgres so that it can run during prod. jpeg-dev is req (needs to be installed) to run Pillow package for image mgmt. --virtual line sets a virtual dependancy package, that can later be removed. packages below that are the ones needed to install so that psycopg2 is installed correctly
 # linux-headers package is required for our uWSGI server installation; uWSGI server connects our app to a web server; only temporarily needed
+# seems like DEV is set to true in args in docker-compose.yml but overwritten here below
 ARG DEV=false
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
