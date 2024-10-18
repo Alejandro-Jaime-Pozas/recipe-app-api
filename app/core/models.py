@@ -101,3 +101,4 @@ class Recipe(models.Model):  # don't forget to add this model to admin.py
 
     def __str__(self):
         return self.title
+    
