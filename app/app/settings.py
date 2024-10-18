@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'changeme')
 DEBUG = bool(int(os.environ.get('DEBUG', 0)))  # convert the value of the env into int then bool (1 vs 0) and if no DEBUG key found in env, set to 0 or False
 
 ALLOWED_HOSTS = []
-# if there's multiple allowed hosts in env fields, then add those to ALLOWED_HOSTS list by splitting the string at the ',' value and thus creating a list to extend original ALLOWED_HOSTS 
+# if there's multiple allowed hosts in env fields, then add those to ALLOWED_HOSTS list by splitting the string at the ',' value and thus creating a list to extend original ALLOWED_HOSTS
 ALLOWED_HOSTS.extend(
     filter(
         None,
@@ -153,7 +153,7 @@ MEDIA_ROOT = '/vol/web/media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # set the default auth user model to the model we built in core.models
-AUTH_USER_MODEL = 'core.User'
+AUTH_USER_MODEL = 'core.User'  # why is this not core.models.User?
 
 # configure the django rest framework to USE the drf_spectacular auto schema generator
 REST_FRAMEWORK = {
