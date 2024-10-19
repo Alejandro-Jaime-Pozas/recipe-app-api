@@ -33,7 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
         return get_user_model().objects.create_user(**validated_data)
 
     # actually updates the model that the serializer is connected to
-    # instance within update() refers to the specific model instance (not self since self refers to UserSerializerO)
+    # instance within update() refers to the specific model instance (not self since self refers to UserSerializer)
     def update(self, instance, validated_data):
         """Update and return user."""
         password = validated_data.pop('password', None)  # remove pwd from dict if pwd is in validated_data, can be None since password not required to patch user
