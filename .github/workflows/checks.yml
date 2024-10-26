@@ -11,7 +11,7 @@ on: [push]
 # test-lint is the id of that specific job, could use job ids to run in specific order
 # name is what shows as name in the github actions interface
 # runs-on is the OS that we'll run the job on; ubuntu is a basic linux OS
-  # ubuntu runner should already come built-in with docker-compose
+  # ubuntu runner should already come built-in with docker compose
 jobs:
   test-lint:
     name: Test and Lint
@@ -24,11 +24,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      # the uses here triggers an action that checks out the code to run next steps
+      # the uses here triggers an action that checks out the code to run next steps, otherwise github actions doesn't checkout the code bould break the process
       - name: Checkout
         uses: actions/checkout@v2
       - name: Test
-        run: docker-compose run --rm app sh -c "python manage.py wait_for_db && python manage.py test"
+        run: docker compose run --rm app sh -c "python manage.py wait_for_db && python manage.py test"
       # removing Linting since there's a lot of errors based on my code comments
       # - name: Lint
-      #   run: docker-compose run --rm app sh -c "flake8"
+      #   run: docker compose run --rm app sh -c "flake8"
