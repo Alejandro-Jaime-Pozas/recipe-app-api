@@ -93,7 +93,7 @@ DATABASES = {
     # THIS IS THE BASIC SQL DATABASE BUILT IN FOR DJANGO
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': BASE_DIR / 'db.sqlite3',
-        # configuring the postgres db that docker-compose references so docker can get environ variables to build, login to db
+        # configuring the postgres db that docker-compose references so docker can get environ variables to build, login to db server
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': os.environ.get('DB_HOST'),
         'NAME': os.environ.get('DB_NAME'),

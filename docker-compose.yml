@@ -37,6 +37,7 @@ services:
       - DB_USER=devuser
       - DB_PASS=changeme
       - DEBUG=1
+    # depends_on only checks if the computer/server is active, but not if the service within it is running (db) so need to acct for this using the wait_for_db functionality
     # this tells docker-compose that this django app depends on the db service, so if db doesn't work, django app too
     depends_on:
       - db
