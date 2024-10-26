@@ -4,7 +4,7 @@ FROM python:3.9-alpine3.13
 # LABEL maintainer is used so that other developers know who is the person in charge of app
 # USER root # if you want to specify user when building image
 
-LABEL maintainer="londonappdeveloper.com"
+LABEL maintainer="https://portfolio-alejandro-jaime.web.app/"
 
 # recommended when running py in docker container, means you don't want to buffer the output
 ENV PYTHONBUFFERED 1
