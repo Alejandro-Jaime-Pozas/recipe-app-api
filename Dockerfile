@@ -25,8 +25,10 @@ EXPOSE 8000
 # adduser cmd then adds a specific user to our image; its best practice to specify a user that is not root/superadmin user for security. user w/no pwd, name the user
 # ARG here is set and then overwritten in docker compose yml file, so that when app runs through docker compose, DEV is set to true, not false
 # if, then, fi stmt is an if stmt in docker shell cmd, we're checking if DEV is set to true and if so installing the dev reqs from txt file
-# apk add lines: first line indicates dependencies to install and persist after image creation; second line --virtual adds temp when building image but then removes dependencies for efficiency
-# apk lines: client for postgres so that it can run during prod. jpeg-dev is req (needs to be installed) to run Pillow package for image mgmt. --virtual line sets a virtual dependancy package, that can later be removed. packages below that are the ones needed to install so that psycopg2 is installed correctly
+# apk stands for alpine linux
+# apk add lines: first line indicates dependencies to install and persist after image creation; second line --virtual .tmp-build-deps adds temp folder when building image but then removes dependencies for efficiency with the apk del .tmp-build-deps command
+# apk temp packages are simply required to install for example postgres adaptor for psycopg2, but then are NOT required to run the application, just at start so you can remove to make build lightweight
+# apk lines: client for postgres so that it can run during prod. jpeg-dev is req (needs to be installed) to run Pillow package for image mgmt. --virtual line sets a virtual dependency package, that can later be removed. packages below that are the ones needed to install so that psycopg2 is installed correctly
 # linux-headers package is required for our uWSGI server installation; uWSGI server connects our app to a web server; only temporarily needed
 # seems like DEV is set to true in args in docker-compose.yml but overwritten here below
 ARG DEV=false

@@ -1,6 +1,8 @@
 '''
 Sample tests
 '''
+# SimpleTestCase does NOT require a temp db created by django for testing, so tests run faster
+# TestCase does include temp db creation for each individual test, use wisely
 from django.test import SimpleTestCase # can also import TestCase for more complex tests
 
 from . import calc
@@ -20,3 +22,9 @@ class CalcTests(SimpleTestCase):
         res = calc.subtract(10, 15)
 
         self.assertEqual(res, 5)
+
+    def test_divide(self):
+        '''Subtracts 2nd number from 1st number.'''
+        res = calc.divide(12, 3)
+
+        self.assertEqual(res, 4)
