@@ -17,13 +17,13 @@ class CommandTests(SimpleTestCase):
     """Test commands."""
 
     # one possible test case is that we run the wait for command and db is already ready
-    def test_wait_for_db_ready(self, patched_check): # patched_check obj return from @patch decorator and we'll use it to customize the behavior
+    def test_wait_for_db_ready(self, patched_check):  # patched_check obj return from @patch decorator and we'll use it to customize the behavior
         """Test waiting for database if database ready."""
-        patched_check.return_value = True # .return_value to indicate a value
+        patched_check.return_value = True  # .return_value to indicate a value
 
-        call_command('wait_for_db') # will execute the code inside our 'wait_for_db' file
+        call_command('wait_for_db')  # will execute the code inside our 'wait_for_db' file
 
-        patched_check.assert_called_once_with(databases=['default']) # this ensures that the mocked obj which is returned by the 'check' command is called with the database parameter
+        patched_check.assert_called_once_with(databases=['default'])  # this ensures that the mocked obj which is returned by the 'check' command is called with the database parameter
 
 
     # another test case is that we run the wait for command and db is not ready, and we want to wait a few seconds and try again
