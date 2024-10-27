@@ -23,7 +23,7 @@ class CommandTests(SimpleTestCase):
 
         call_command('wait_for_db')  # will execute the code inside our 'wait_for_db' file
 
-        patched_check.assert_called_once_with(databases=['default'])  # this ensures that the mocked obj which is returned by the 'check' command is called with the database parameter
+        patched_check.assert_called_once_with(databases=['default'])  # this ensures that the mocked obj which is returned by the 'check' method is called with the database parameter
 
 
     # another test case is that we run the wait for command and db is not ready, and we want to wait a few seconds and try again
