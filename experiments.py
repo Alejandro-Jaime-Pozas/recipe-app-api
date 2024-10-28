@@ -1,3 +1,7 @@
+# print(__name__)
+# print(__file__)
+
+
 # my_dict = {'a': 1, 'b': 2, 'c': 3}
 
 # # Accessing dictionary values dynamically
