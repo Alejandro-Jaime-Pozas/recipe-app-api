@@ -1,3 +1,11 @@
+# examples = [None, '1', 0, [1], (1), {1}]
+# for thing in examples:
+#     if thing:
+#         print(type(thing), ' is True.')
+#     else:
+#         print(f'{thing} is False.')
+
+
 # print(__name__)
 # print(__file__)
 
