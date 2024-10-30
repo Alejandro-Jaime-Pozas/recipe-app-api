@@ -14,9 +14,9 @@ class UserAdmin(BaseUserAdmin):
     # ordering, list_display for main all Users list page
     ordering = ['id']  # order users by id
     list_display = ['email', 'name']  # display email and name columns
-    # fieldsets for the edit/change User page
+    # fieldsets allow you to change the webpage view for change user page
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),  # None refers to the title, so no title, and the fields to include in the user edit/change page ie email, password
+        (None, {'fields': ('name', 'email', 'password')}),  # None refers to the title, so no title, and the fields to include in the user edit/change page ie email, password
         (
             _('Permissions'),  # name of the title for this section is permissions
             {
@@ -30,7 +30,7 @@ class UserAdmin(BaseUserAdmin):
         (_('Important dates'), {'fields': ('last_login',)}),
     )
     readonly_fields = ['last_login']  # makes this field read only, no editing
-    # fieldsets for the add User page
+    # fieldsets for the add User admin webpage
     add_fieldsets = (
         (
             None, {
