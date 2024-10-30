@@ -30,6 +30,7 @@ class UserAdmin(BaseUserAdmin):
         (_('Important dates'), {'fields': ('last_login',)}),
     )
     readonly_fields = ['last_login']  # makes this field read only, no editing
+
     # fieldsets for the add User admin webpage
     add_fieldsets = (
         (
