@@ -1,3 +1,37 @@
+import pygetwindow as gw
+import pyautogui
+from screeninfo import get_monitors
+import time
+
+# Get the active window
+active_window = gw.getActiveWindow()
+
+# Check if there's an active window
+if active_window:
+    # Get active window's current position and dimensions
+    win_left, win_top = active_window.left, active_window.top
+    win_width, win_height = active_window.width, active_window.height
+
+    # Find the screen the active window is on
+    for monitor in get_monitors():
+        if (monitor.x <= win_left < monitor.x + monitor.width) and (monitor.y <= win_top < monitor.y + monitor.height):
+            # Set up new window dimensions within this screen
+            new_width = monitor.width - 200  # 200-pixel gap on the left
+            new_height = monitor.height - 100
+            new_left = monitor.x + 200  # Start 200 pixels from the left edge of the monitor
+            new_top = monitor.y        # Align with the top of the monitor
+
+            # Resize and move the window
+            active_window.resizeTo(new_width, new_height)
+            active_window.moveTo(new_left, new_top)
+
+            print("Window resized and repositioned.")
+            break
+else:
+    print("No active window found.")
+
+
+
 # examples = [None, '1', 0, [1], (1), {1}]
 # for thing in examples:
 #     if thing:

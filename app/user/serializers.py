@@ -49,7 +49,7 @@ class AuthTokenSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(
         style={'input_type': 'password'},  # when viewing this in browser, indicates pwd should be hidden
-        trim_whitespace=False,  # remove the default of trimming whitespace
+        # trim_whitespace=False,  # to remove the default of trimming whitespace
     )
 
     # is called after the data is posted to the view, once we specify the AuthTokenSerializer in the view
